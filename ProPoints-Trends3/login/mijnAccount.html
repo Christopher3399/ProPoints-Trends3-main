@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mijn Account - Garvis Project</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="body">
+    <!-- Navigatiebalk -->
+    <nav class="navbar">
+        <a href="homelogin.html">Home</a>
+        <a href="feedback.html">Chat</a>
+        <a href="mijnAccount.html">My Account</a>
+        <a href="Aboutlogin.html">About us</a>
+        <a href="/ProPoints-Trends3/Contact.html">Contact us</a>
+
+        <a href="../home.html" class="login">Log out</a>
+    </nav>
+
+    <!-- Gebruikersgegevens -->
+    <div class="user-details">
+        <h2>My Account</h2>
+        <div class="profile-info">
+            <div class="profile-picture">
+                <img id="profile-img" src="images/default-profile.png" alt="Profile Picture">
+                <input type="file" id="upload-btn" accept="image/*">
+            </div>
+            <p>Name: <span id="name">Admin</span></p>
+            <p>First Name: <span id="first-name">Admin</span></p>
+            <p>Last Name: <span id="last-name">Admin</span></p>
+            <p>Birthdate: <span id="birthdate">01-01-1990</span></p>
+            <p>Email: <span id="email">admin@admin.be</span></p>
+
+            <button id="edit-btn">Bewerken</button>
+            <button id="save-btn" style="display:none;">Opslaan</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const profileImg = document.getElementById('profile-img');
+            const uploadBtn = document.getElementById('upload-btn');
+
+            // Laad opgeslagen gegevens uit localStorage
+            const fields = ['name', 'first-name', 'last-name', 'birthdate', 'email'];
+            fields.forEach(fieldId => {
+                const savedValue = localStorage.getItem(fieldId);
+                if (savedValue) {
+                    document.getElementById(fieldId).textContent = savedValue;
+                }
+            });
+
+            // Laad opgeslagen profielfoto
+            const savedImage = localStorage.getItem('profileImage');
+            if (savedImage) {
+                profileImg.src = savedImage;
+            }
+
+            // Upload nieuwe profielfoto
+            uploadBtn.addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const imageDataUrl = e.target.result;
+                        profileImg.src = imageDataUrl;
+
+                        // Sla de profielfoto op in localStorage
+                        localStorage.setItem('profileImage', imageDataUrl);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            const editBtn = document.getElementById('edit-btn');
+            const saveBtn = document.getElementById('save-btn');
+
+            // Functie om velden bewerkbaar te maken
+            function makeFieldsEditable(editable) {
+                fields.forEach(fieldId => {
+                    const span = document.getElementById(fieldId);
+                    if (editable) {
+                        const input = document.createElement('input');
+                        input.type = fieldId === 'birthdate' ? 'date' : 'text';
+                        input.id = fieldId;
+                        input.value = span.textContent;
+                        span.parentNode.replaceChild(input, span);
+                    } else {
+                        const input = document.getElementById(fieldId);
+                        const spanNew = document.createElement('span');
+                        spanNew.id = fieldId;
+                        spanNew.textContent = input.value;
+                        input.parentNode.replaceChild(spanNew, input);
+                    }
+                });
+                saveBtn.style.display = editable ? 'inline' : 'none';
+                editBtn.style.display = editable ? 'none' : 'inline';
+            }
+
+            // Bewerken knop event listener
+            editBtn.addEventListener('click', function () {
+                makeFieldsEditable(true);
+            });
+
+            // Opslaan knop event listener
+            saveBtn.addEventListener('click', function () {
+                fields.forEach(fieldId => {
+                    const input = document.getElementById(fieldId);
+                    localStorage.setItem(fieldId, input.value);
+                });
+
+                makeFieldsEditable(false);
+            });
+        });
+    </script>
+</body>
+
+</html>
