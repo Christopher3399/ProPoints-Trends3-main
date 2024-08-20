@@ -180,4 +180,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 //einde code contactpagina
-//commentaar toevoegen
+//commentaar toevoegen2
